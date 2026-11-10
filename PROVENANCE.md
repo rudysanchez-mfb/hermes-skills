@@ -4,8 +4,8 @@ This document records the source material and changes made for publication.
 
 ## Source
 
-Both skills were curated from a private Hermes agent skills directory operated
-by the copyright holder:
+The original two skills were curated from a private Hermes agent skills
+directory operated by the copyright holder:
 
 - `scope-fence/SKILL.md`
 - `storage-space-check/SKILL.md`
@@ -17,10 +17,12 @@ location was modified, moved, or deleted.
 
 ## What was included
 
-Only the two skill directories named above are included in this release.
-Nothing else from the private skills tree was copied. A larger set of
-operational notes was deliberately deferred until it has been version-tested
-in the open.
+The initial release included only the two skill directories named above.
+A later release added the eight curated skills listed in the next section.
+No other files from the private skills tree were copied. The ancillary
+`references/` and `scripts/` directories that accompanied some of the later
+skills were deliberately not published; dangling references to them were
+removed or replaced with self-contained guidance.
 
 ## Changes made for publication
 
@@ -71,15 +73,76 @@ Rewritten as a self-contained, portable script:
 - Confirmed read-only: it only calls `os.statvfs` and never writes to,
   creates, or deletes anything on the measured paths.
 
+## Second release: eight curated skills
+
+Eight additional skills were curated from the same private Hermes agent skills
+directory, read from the private host read-only over SSH (`BatchMode`,
+forwarding disabled). No file in the source location was modified, moved, or
+deleted.
+
+Source paths and published destinations:
+
+- `adversarial-verify/SKILL.md` -> `skills/adversarial-verify/SKILL.md`
+- `plan-gate/SKILL.md` -> `skills/plan-gate/SKILL.md`
+- `ruthless-editor/SKILL.md` -> `skills/ruthless-editor/SKILL.md`
+- `memory-hygiene/SKILL.md` -> `skills/memory-hygiene/SKILL.md`
+- `devops/hermes-cron-pitfalls/SKILL.md` -> `skills/hermes-cron-pitfalls/SKILL.md`
+- `devops/hermes-core-change-safety/SKILL.md` -> `skills/hermes-core-change-safety/SKILL.md`
+- `devops/hermes-compression-monitoring/SKILL.md` -> `skills/hermes-compression-monitoring/SKILL.md`
+- `devops/hermes-relay-ops/SKILL.md` -> `skills/hermes-relay-ops/SKILL.md`
+
+### Sanitization performed on the eight skills
+
+Every published file was reviewed and edited to remove material that was
+specific to the private environment while preserving the operational
+instruction:
+
+- **Absolute home paths.** Every `/home/<actual-user>/...` path was replaced
+  with a neutral placeholder (`/home/<user>/...`) or with `$HERMES_HOME` /
+  `~/.hermes/...` where the text already used a home-relative convention. A
+  note was added where the placeholder must be substituted for the absolute
+  path to work (notably the `$HOME`-override pitfall in `hermes-cron-pitfalls`).
+- **Host and network identifiers.** No hostnames or LAN IP addresses remain.
+  Loopback addresses (`127.0.0.1`, `localhost`) were kept only where they are
+  part of the technical procedure and identify no private host.
+- **Personal names and incident references.** References to the operator by
+  name were replaced with "the operator" / "the user". Named private scripts,
+  job names, session IDs, and one-off incident dates were generalized into
+  representative examples; the technical failure mode and fix were retained.
+- **Frontmatter.** Each of the eight new `SKILL.md` files was normalized to a
+  clean `name` + `description` block (the two original skills already had
+  one). The `name` matches the published directory name for all ten skills.
+  Source-specific `version`, `author`, `license`, `platforms`, `category`, and
+  `metadata.related_skills` keys were dropped where they referenced skills that
+  are not part of this tap or conflicted with the repository's Apache-2.0
+  licensing.
+- **Dangling references.** The skills referenced ancillary `references/*.md`
+  files and `scripts/*.py` helpers that were not published in this release.
+  Those pointers were removed or rewritten as self-contained instructions, so
+  no published link points at a file that does not exist. Where a tool or
+  service name was specific to the private stack, the guidance was generalized
+  to the equivalent generic workflow (for example, "an email-provider REST
+  fallback" rather than a named private script).
+- **No secrets.** No API keys, tokens, passwords, private keys, or credential
+  fragments were copied. The source files contained at most redacted
+  credential-shaped examples; those were removed rather than published.
+
 ## Verification performed
 
-- Frontmatter parsed for both `SKILL.md` files (`name`, `description` present).
-- Relative script reference resolves to an existing file inside the skill.
-- `check_storage.py` compiles and runs against temporary fixtures, including a
-  permissions-restricted (non-writable) directory, with no files created or
-  modified on the measured paths.
-- The published `skills/` tree was grepped for personal identifiers, host
-  names, private paths, and IP addresses; none remain.
+- Frontmatter parsed for all ten `SKILL.md` files (`name`, `description`
+  present; `name` matches its directory).
+- Relative Markdown links in `README.md` and `PROVENANCE.md` resolve to files
+  in this repository; no published skill points at an unpublished reference or
+  script file.
+- The full `skills/` tree was scanned for personal names, absolute user-home
+  paths, hostnames, LAN IP addresses, credential-shaped strings, and private
+  key material; none remain.
+- The stdlib `unittest` suite still passes (`python3 -m unittest discover -s
+  tests -v`).
+- `storage-space-check`'s relative script reference resolves to an existing
+  file inside the skill, and `check_storage.py` compiles and runs against
+  temporary fixtures, including a permissions-restricted (non-writable)
+  directory, with no files created or modified on the measured paths.
 
 ## Rights and provenance caveats
 
